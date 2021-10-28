@@ -1,0 +1,202 @@
+{% extends 'layout.html' %}
+{% load mathfilters %}
+
+{% block body %}
+
+<div class="row">
+    <div class="col-auto me-auto offset-md-1">
+        <h3 style ="text-align-center;color:red" ><strong><i>#Randevu almak istediğiniz haftayı seçiniz.</i></strong></h3>
+    </div>
+
+</div>
+<br>
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <div class="accordion accordion" id="accordionExample">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOne">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+            <h4><strong> Bu Hafta({{ week_name_1 }})</strong> </h4>
+          </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+          
+            <table class="table table-bordered border-dark">
+              <thead style= "color:black;" class="thead-dark">
+                <tr>
+                  <th style= "font-size:20px;color:#4C767E" scope="col"><i><strong><center>SAAT</center></strong></i></th>
+                  <th style= "font-size:20px;color:#4C767E" scope="col"><i><strong><center>PAZARTESİ</center></strong></i></th>
+                  <th style= "font-size:20px;color:#4C767E" scope="col"><i><strong><center>SALI</center></strong></i></th>
+                  <th style= "font-size:20px;color:#4C767E" scope="col"><i><strong><center>ÇARŞAMBA</center></strong></i></th>
+                  <th style= "font-size:20px;color:#4C767E" scope="col"><i><strong><center>PERŞEMBE</center></strong></i></th>
+                  <th style= "font-size:20px;color:#4C767E" scope="col"><i><strong><center>CUMA</center></strong></i></th>
+                  <th style= "font-size:20px;color:#4C767E" scope="col"><i><strong><center>CUMARTESİ</center></strong></i></th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                  {% for hour_number,hour in hour_list  %}
+                    <tr>
+                    <th style= "font-size:20px;color:#4C767E" scope="row"><center><strong>{{hour}}</center></strong></th>
+                    {% for appointment in appointments  %}
+                      {% if appointment.hour == hour_number %}
+                        {% if appointment.week == '1' %}
+                          {% if appointment.time_day|sub:recent_time > 60  %} <!-- zamanı geçti mi sorgulama -->
+                            {% if not appointment.whom  %}
+                              <td style = "text-align:center">
+                                <!-- Button trigger modal -->
+                                <button  style ="padding:7px 27px;tex-align:center" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{appointment.id}}">
+                                  Müsait</button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal{{appointment.id}}" tabindex="-1" aria-labelledby="exampleModalLabel{{appointment.id}}" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel{{appointment.id}}">Bu randevuyu almak istediğinize emin misiniz?</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <p><center>Hafta : {{week_name_1}}</center></p>
+                                        <p><center>Gün : {{appointment.get_day_display }}</center></p>
+                                        <p><center>Saat : {{appointment.get_hour_display }}</center></p>
+
+                                      </div>
+                                      <div class="modal-footer">
+                                        <a href="{% url 'appointment:appointment_success' appointment.id %}" class="btn btn-primary">Randevu Al</a>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+
+                            {% else %}
+                              <td style = "text-align:center">
+                              <button style ="padding:7px 34px;" type="button" class="btn btn-danger" disabled>Dolu</button>
+                              </td>
+                            {% endif %}   
+                          {% else %} <!-- zamanı geçti mi sorgulama else -->
+                            <td style = "text-align:center">
+                            <button style ="padding:7px 13px;" type="button" class="btn btn-dark" disabled>Günü Geçti</button>
+                            </td>
+                          {% endif %} <!-- zamanı geçti mi sorgulama end -->
+                        {% endif %}
+                      {% else %}
+                      {% endif %}
+                    {% endfor %}
+                  </tr>
+                {% endfor %}
+              
+              </tbody>
+            </table>          
+          </div>
+        </div>
+      </div>
+
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingTwo">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            <h4 style = "color:grey"><strong> Gelecek Hafta({{ week_name_2 }})</strong> </h4>
+          </button>
+        </h2>
+        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            <table class="table table-bordered border-dark">
+              <thead style= "color:black;" class="thead-dark">
+                <tr>
+                  <th style= "font-size:20px;color:#4C767E" scope="col"><i><strong><center>SAAT</center></strong></i></th>
+                  <th style= "font-size:20px;color:#4C767E" scope="col"><i><strong><center>PAZARTESİ</center></strong></i></th>
+                  <th style= "font-size:20px;color:#4C767E" scope="col"><i><strong><center>SALI</center></strong></i></th>
+                  <th style= "font-size:20px;color:#4C767E" scope="col"><i><strong><center>ÇARŞAMBA</center></strong></i></th>
+                  <th style= "font-size:20px;color:#4C767E" scope="col"><i><strong><center>PERŞEMBE</center></strong></i></th>
+                  <th style= "font-size:20px;color:#4C767E" scope="col"><i><strong><center>CUMA</center></strong></i></th>
+                  <th style= "font-size:20px;color:#4C767E" scope="col"><i><strong><center>CUMARTESİ</center></strong></i></th>
+                </tr>
+              </thead>
+              <tbody>
+                  {% for hour_number,hour in hour_list  %}
+                    <tr>
+                    <th style= "font-size:20px;color:#4C767E" scope="row"><center><strong>{{hour}}</center></strong></th>
+                    {% for appointment in appointments  %}
+                      {% if appointment.hour == hour_number %}
+                        {% if appointment.week == '2' %}
+                          {% if appointment.time_day|sub:recent_time > 60  %} <!-- zamanı geçti mi sorgulama -->
+                            {% if not appointment.whom  %}
+                              <td style = "text-align:center">
+                                <!-- Button trigger modal -->
+                                <button style ="padding:7px 27px" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{appointment.id}}">
+                                  Müsait
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal{{appointment.id}}" tabindex="-1" aria-labelledby="exampleModalLabel{{appointment.id}}" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel{{appointment.id}}">Bu randevuyu almak istediğinize emin misiniz?</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <p><center>Hafta : {{week_name_2}}</center></p>
+                                        <p><center>Gün : {{appointment.get_day_display }}</center></p>
+                                        <p><center>Saat : {{appointment.get_hour_display }}</center></p>
+
+                                      </div>
+                                      <div class="modal-footer">
+                                        <a href="{% url 'appointment:appointment_success' appointment.id %}" class="btn btn-primary">Randevu Al</a>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+
+                         {% else %}
+                              <td style = "text-align:center">
+                              <button style ="padding:7px 34px;" type="button" class="btn btn-danger" disabled>Dolu</button>
+                              </td>
+                            {% endif %}   
+                          {% else %} <!-- zamanı geçti mi sorgulama else -->
+                              <td style = "text-align:center">
+                            <button style ="padding:7px 13px;" type="button" class="btn btn-dark" disabled>Günü Geçti</button>
+                            </td>
+                          {% endif %} <!-- zamanı geçti mi sorgulama end -->
+                        {% endif %}
+                      {% else %}
+                      {% endif %}
+                    {% endfor %}
+                  </tr>
+                {% endfor %}
+              
+              </tbody>
+            </table>          
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock body %}
+
+
+
+
+
+
+

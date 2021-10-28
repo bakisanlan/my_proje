@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block body %}
+{% load crispy_forms_tags %}
+
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h1 style ="text-align-center;color:grey" ><strong><i>#Randevu almak için önce giriş yapınız.</i></strong></h1>
+        <hr>
+
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <br>
+         <br>
+          <br>
+        <h3>Giriş Yap</h3>
+        <hr>
+        <form method = "post">
+            {% csrf_token %}
+            
+            {{form|crispy}}
+      
+        <div class="d-grid gap-2 col-6 mx-auto">
+            <button type = "submit" class = "btn btn-primary">Giriş Yap</button>
+        <a class="btn btn-secondary" href= "{% url 'appointment:register' %}" role="button">Üye değil misiniz? Kayıt olmak için tıklayın.</a>
+        </div>  
+
+        </form>
+    </div>
+  </div>
+
+
+{% endblock body %}

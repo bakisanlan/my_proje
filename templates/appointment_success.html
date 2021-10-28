@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h3><center>Randevu Bilgileriniz :</center></h3>
+<hr>
+
+<p><center>Gün : {{appointment.get_day_display }}</center></p>
+<p><center>Saat : {{appointment.get_hour_display }}</center></p>
+<p><center>Tarih : {{ date  }}</center></p>
+
+
+
+
+
+{% endblock body %}

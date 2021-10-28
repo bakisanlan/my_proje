@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <h2><strong>Randevularım <i>(kullanıcı : {{request.user}})</i></strong></h2>
+        <hr>
+        {% if not appointments %}   
+            <div class="alert alert-danger" role="alert">
+            Hiç randevunuz yok, randevu sekmesinden randevu alabilirsiniz.
+            </div>
+        {% else %}
+            <table class="table table-hover">
+            <thead>
+                <tr>
+                <th scope="col">Randevu Tarihi</th>
+                <th scope="col">Randevu Günü</th>
+                <th scope="col">Randevu Saati</th>
+                <th scope="col">Randevu Alınma Zamanı</th>
+                <th scope="col">Randevuyu İptal Et</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for appointment,date in appo_date  %}
+                <tr>
+                <td>{{date}}</td>
+                <td>{{appointment.get_day_display}}</td>
+                <td>{{appointment.get_hour_display}}</td>
+                <td>{{appointment.created_date}}</td>
+                <td><a class ="btn btn-danger"  href="{% url 'appointment:delete_appointment' appointment.id%}">İptal Et</a></td>
+
+                </tr>
+        {% endfor %}
+            </tbody>
+            </table>
+        {% endif %}
+        
+    </div>
+</div>
+{% endblock body %}
+
